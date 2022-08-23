@@ -1,10 +1,13 @@
 [package]
+description = "(For Axum) Provides a macro to generate a static file router that serves the directory dynamically in debug mode and statically embeds the files and routes in release mode."
+documentation = "https://docs.rs/static-router"
 edition = "2021"
 license = "MIT OR Apache"
 name = "static-router"
+repository = "https://github.com/mattfbacon/static-router"
 version = "0.1.0"
 
 [dependencies]
 axum = "0.5"
-static-router-macros = { path = "../static-router-macros" }
+static-router-macros = { path = "../static-router-macros", version = "=0.1.0" }
 tower-http = { version = "0.3", features = ["fs"] }

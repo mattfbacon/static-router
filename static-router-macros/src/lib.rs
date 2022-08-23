@@ -1,3 +1,5 @@
+//! See the main `static-router` crate.
+
 #![warn(clippy::pedantic)]
 #![warn(
 	missing_copy_implementations,
