@@ -2,7 +2,7 @@
 description = "Macros for the `static-router` crate"
 documentation = "https://docs.rs/static-router"
 edition = "2021"
-license = "MIT OR Apache"
+license = "MIT OR Apache-2.0"
 name = "static-router-macros"
 repository = "https://github.com/mattfbacon/static-router"
 version = "0.1.0"
