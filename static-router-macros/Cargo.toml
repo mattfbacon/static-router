@@ -1,0 +1,15 @@
+[package]
+edition = "2021"
+license = "MIT OR Apache"
+name = "static-router-macros"
+version = "0.1.0"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+litrs = "0.2"
+proc-macro-error = "1"
+proc-macro2 = "1"
+quote = "1"
+walkdir = "2"
