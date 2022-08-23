@@ -1,4 +1,4 @@
-#![doc = include_str!("../../README.md")]
+#![doc = include_str!("../README.md")]
 //!
 //! To get started, see the [`static_router!`] macro.
 
