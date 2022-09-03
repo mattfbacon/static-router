@@ -72,7 +72,7 @@ pub fn static_router(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream
 	let dynamic_router = make_dynamic_router(&static_path);
 
 	quote! {
-		pub fn #router_name() -> ::static_router::axum::Router {
+		pub fn #router_name() -> ::static_router::__private::axum::Router {
 			#[cfg(debug_assertions)]
 			{ #dynamic_router }
 			#[cfg(not(debug_assertions))]
@@ -106,14 +106,14 @@ fn make_static_router(root_path: &str) -> TokenStream {
 				let mime_lit = Literal::string(mime);
 
 				Some(quote! {
-					router = router.route(#user_path_lit, ::static_router::axum::routing::get(|| ([("Content-Type", #mime_lit)], ::static_router::std::include_bytes!(#actual_path_lit))));
+					router = router.route(#user_path_lit, ::static_router::__private::axum::routing::get(|| ([("Content-Type", #mime_lit)], ::static_router::__private::std::include_bytes!(#actual_path_lit))));
 				})
 			}
 			Err(error) => abort_call_site!("error walking directories: {}", error),
 		});
 
 	quote! {
-		let mut router = ::static_router::axum::Router::new();
+		let mut router = ::static_router::__private::axum::Router::new();
 		#(#routes)*
 		router
 	}
@@ -121,6 +121,12 @@ fn make_static_router(root_path: &str) -> TokenStream {
 
 fn make_dynamic_router(path: &str) -> TokenStream {
 	quote! {
-		::static_router::axum::Router::new().fallback(::static_router::axum::routing::get_service(::static_router::tower_http::services::ServeDir::new(#path)).handle_error(|err| async move { crate::error::Io("reading static file", err) }))
+		::static_router::__private::axum::Router::new().fallback(::static_router::__private::axum::routing::get_service(::static_router::__private::tower_http::services::ServeDir::new(#path)).handle_error(|err| async move {
+			let status = match err.kind() {
+				::static_router::__private::std::io::ErrorKind::NotFound => ::static_router::__private::http::status::StatusCode::NOT_FOUND,
+				_ => ::static_router::__private::http::status::StatusCode::INTERNAL_SERVER_ERROR,
+			};
+			(status, err.to_string())
+		}))
 	}
 }

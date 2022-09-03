@@ -51,5 +51,5 @@ pub use static_router_macros::static_router;
 
 #[doc(hidden)]
 pub mod __private {
-	pub use {axum, std, tower_http};
+	pub use {axum, http, std, tower_http};
 }
