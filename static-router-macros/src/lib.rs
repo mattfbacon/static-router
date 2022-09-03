@@ -121,7 +121,7 @@ fn make_static_router(root_path: &str) -> TokenStream {
 
 fn make_dynamic_router(path: &str) -> TokenStream {
 	quote! {
-		::static_router::__private::axum::Router::new().fallback(::static_router::__private::axum::routing::get_service(::static_router::__private::tower_http::services::ServeDir::new(#path)).handle_error(|err| async move {
+		::static_router::__private::axum::Router::new().fallback(::static_router::__private::axum::routing::get_service(::static_router::__private::tower_http::services::ServeDir::new(#path)).handle_error(|err: ::static_router::__private::std::io::Error| async move {
 			let status = match err.kind() {
 				::static_router::__private::std::io::ErrorKind::NotFound => ::static_router::__private::http::status::StatusCode::NOT_FOUND,
 				_ => ::static_router::__private::http::status::StatusCode::INTERNAL_SERVER_ERROR,
