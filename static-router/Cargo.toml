@@ -5,10 +5,10 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 name = "static-router"
 repository = "https://github.com/mattfbacon/static-router"
-version = "0.1.0"
+version = "0.1.1"
 
 [dependencies]
 axum = "0.5"
 http = "0.2"
-static-router-macros = { path = "../static-router-macros", version = "=0.1.0" }
+static-router-macros = { path = "../static-router-macros", version = "=0.1.1" }
 tower-http = { version = "0.3", features = ["fs"] }
