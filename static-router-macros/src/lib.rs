@@ -106,7 +106,7 @@ fn make_static_router(root_path: &str) -> TokenStream {
 				let mime_lit = Literal::string(mime);
 
 				Some(quote! {
-					router = router.route(#user_path_lit, ::static_router::__private::axum::routing::get(|| async { ([("Content-Type", #mime_lit)], ::static_router::__private::std::include_bytes!(#actual_path_lit)) }));
+					router = router.route(#user_path_lit, ::static_router::__private::axum::routing::get(|| async { ([("Content-Type", #mime_lit)], ::static_router::__private::std::include_bytes!(#actual_path_lit) as &'static [u8]) }));
 				})
 			}
 			Err(error) => abort_call_site!("error walking directories: {}", error),
