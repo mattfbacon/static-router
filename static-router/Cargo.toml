@@ -10,5 +10,5 @@ version = "0.1.4"
 [dependencies]
 axum = "0.5"
 http = "0.2"
-static-router-macros = { path = "../static-router-macros", version = "=0.1.4" }
+static-router-macros = { path = "../static-router-macros", version = "=0.1.5" }
 tower-http = { version = "0.3", features = ["fs"] }
