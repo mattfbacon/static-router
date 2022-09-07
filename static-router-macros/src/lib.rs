@@ -102,7 +102,7 @@ fn make_static_router(root_path: &str) -> TokenStream {
 
 				let mime = actual_path.extension().unwrap_or_else(|| abort_call_site!("missing extension on {:?}: needed to determine MIME type", actual_path)).to_str().and_then(mime::ext_to_mime).unwrap_or_else(|| abort_call_site!("invalid or unrecognized extension on {:?}", actual_path));
 				let mime_lit = Literal::string(mime);
-				
+
 				let data = std::fs::read(actual_path).unwrap_or_else(|err| abort_call_site!(err));
 				let data_lit = Literal::byte_string(&data);
 
