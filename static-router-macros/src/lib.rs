@@ -98,15 +98,21 @@ fn make_static_router(root_path: &str) -> TokenStream {
 
 				let user_path = actual_path.strip_prefix(&root_path).unwrap().to_str().unwrap();
 				let user_path = format!("/{user_path}");
-
-				let actual_path_lit = Literal::string(actual_path.to_str().unwrap());
 				let user_path_lit = Literal::string(&user_path);
 
 				let mime = actual_path.extension().unwrap_or_else(|| abort_call_site!("missing extension on {:?}: needed to determine MIME type", actual_path)).to_str().and_then(mime::ext_to_mime).unwrap_or_else(|| abort_call_site!("invalid or unrecognized extension on {:?}", actual_path));
 				let mime_lit = Literal::string(mime);
+				
+				let data = std::fs::read(actual_path).unwrap_or_else(|err| abort_call_site!(err));
+				let data_lit = Literal::byte_string(&data);
+
+				let hash = xxhash_rust::xxh3::xxh3_128(&data);
+				// yes, the value itself contains quotes
+				let e_tag = format!("\"{hash:032x}\"");
+				let e_tag_lit = Literal::byte_string(e_tag.as_bytes());
 
 				Some(quote! {
-					router = router.route(#user_path_lit, ::static_router::__private::axum::routing::get(|| async { ([("Content-Type", #mime_lit)], ::static_router::__private::std::include_bytes!(#actual_path_lit) as &'static [u8]) }));
+					router = router.route(#user_path_lit, ::static_router::__private::axum::routing::get(|req: ::static_router::__private::http::Request<::static_router::__private::axum::body::Body>| async move { ::static_router::__private::handler(&req, #mime_lit, #data_lit, #e_tag_lit) }));
 				})
 			}
 			Err(error) => abort_call_site!("error walking directories: {}", error),

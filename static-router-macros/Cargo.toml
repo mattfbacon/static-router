@@ -16,3 +16,4 @@ proc-macro-error = "1"
 proc-macro2 = "1"
 quote = "1"
 walkdir = "2"
+xxhash-rust = { version = "0.8", features = ["xxh3"] }

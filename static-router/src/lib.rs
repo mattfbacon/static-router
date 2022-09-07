@@ -51,5 +51,23 @@ pub use static_router_macros::static_router;
 
 #[doc(hidden)]
 pub mod __private {
+	use axum::response::{IntoResponse as _, Response};
 	pub use {axum, http, std, tower_http};
+	pub fn handler(
+		request: &http::Request<axum::body::Body>,
+		content_type: &'static str,
+		data: &'static [u8],
+		e_tag: &'static [u8],
+	) -> Response {
+		if let Some(req_e_tag) = request.headers().get("If-None-Match") {
+			if req_e_tag.as_bytes() == e_tag {
+				return http::StatusCode::NOT_MODIFIED.into_response();
+			}
+		}
+		(
+			[("Content-Type", content_type.as_bytes()), ("ETag", e_tag)],
+			data,
+		)
+			.into_response()
+	}
 }
